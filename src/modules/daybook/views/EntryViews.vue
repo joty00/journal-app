@@ -31,12 +31,14 @@
        <img class="img-thumbnail"
             src="https://aptcrecetas.elcorteingles.es/supermercado/aptc/images/aptc/2228557/platano-la-fruta-saludable-que-debemos-consumir-a-cualquier-edad_0.jpg" alt="entry picture">
     </template>
-    <Fab icon="fa-save"/>
+
+    <Fab icon="fa-save"
+         @on:click="saveEntry"/>
 </template>
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import { mapGetters } from 'vuex'; 
+import { mapGetters, mapActions } from 'vuex'; 
 import getDayMonthYear from '../helpers/getDayMonthYear'
 
     export default {
@@ -46,6 +48,7 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                 required: true
             }
         },
+
         components: {
             Fab: defineAsyncComponent(() => import('../components/Fab.vue'))
         },
@@ -54,14 +57,20 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                 entry: null
             }
         },
+
         methods: {
             loadEntry() {
                 const entry = this.getEntryById(this.id)
                 if(!entry) return this.$router.push({name: 'no-entry'})
 
                 this.entry = entry
-            }
+            },
+            async saveEntry() {
+                this.updateEntry(this.entry)
+            },
+            ...mapActions('journal', ['updateEntry'])
         },
+
         computed: {
             ...mapGetters('journal', ['getEntryById']),
             day() {
@@ -77,9 +86,11 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                 return yearDay
             }
         },
+
         created() {
             this.loadEntry()
         },
+
         watch: {
             id() {
                 this.loadEntry()
