@@ -1,5 +1,6 @@
 <template>
-    <div class="entry-title d-flex justify-content-between p-2">
+    <template v-if="entry">
+        <div class="entry-title d-flex justify-content-between p-2">
 
         <div>
             <span class="text-success fs-3 fw-bold">{{ day }}</span>
@@ -27,11 +28,10 @@
                      v-model="entry.text">
             </textarea>
         </div>
-
-       <Fab icon="fa-save"/>
-
        <img class="img-thumbnail"
-       src="https://aptcrecetas.elcorteingles.es/supermercado/aptc/images/aptc/2228557/platano-la-fruta-saludable-que-debemos-consumir-a-cualquier-edad_0.jpg" alt="entry picture">
+            src="https://aptcrecetas.elcorteingles.es/supermercado/aptc/images/aptc/2228557/platano-la-fruta-saludable-que-debemos-consumir-a-cualquier-edad_0.jpg" alt="entry picture">
+    </template>
+    <Fab icon="fa-save"/>
 </template>
 
 <script>
@@ -57,7 +57,7 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
         methods: {
             loadEntry() {
                 const entry = this.getEntryById(this.id)
-                if(!entry) this.$router.push({name: 'no-entry'})
+                if(!entry) return this.$router.push({name: 'no-entry'})
 
                 this.entry = entry
             }
@@ -81,8 +81,8 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
             this.loadEntry()
         },
         watch: {
-            id(value, oldValue) {
-                
+            id() {
+                this.loadEntry()
             }
         }
     }

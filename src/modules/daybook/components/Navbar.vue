@@ -1,7 +1,7 @@
 <template>
     <nav class="navbar bg-primary">
         <a href="" class="navbar-brand text-white">
-            <img src="@/assets/logo.svg" 
+            <img src="@/assets/diary.png"
                  alt="logo"
                  class="d-inline-block align-text-top mx-2 logo">
             
