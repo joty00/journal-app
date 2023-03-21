@@ -11,7 +11,12 @@ export default {
         {
             path: ':id',
             name: 'entry',
-            component: () => import('@/modules/daybook/views/EntryViews.vue')
+            component: () => import('@/modules/daybook/views/EntryViews.vue'),
+            props: (route) => {
+                return {
+                    id: route.params.id
+                }
+            }
         }
     ]
 }
