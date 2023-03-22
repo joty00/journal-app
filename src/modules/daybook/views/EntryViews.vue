@@ -60,13 +60,30 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
 
         methods: {
             loadEntry() {
-                const entry = this.getEntryById(this.id)
-                if(!entry) return this.$router.push({name: 'no-entry'})
+                let entry
+                if (this.id === 'new') {
+                    entry = {
+                        text: '',
+                        date: new Date().getTime()
+                    }
+                }else {
+                    entry = this.getEntryById(this.id)
+                    if(!entry) return this.$router.push({name: 'no-entry'})
+                }
+
+                
+                
 
                 this.entry = entry
             },
             async saveEntry() {
-                this.updateEntry(this.entry)
+
+                if(this.entry.id) {
+                    //Actualizar entrada
+                    await this.updateEntry(this.entry)
+                }else {
+                    //Crear una nueva entrada
+                }                
             },
             ...mapActions('journal', ['updateEntry'])
         },
