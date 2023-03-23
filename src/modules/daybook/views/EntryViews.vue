@@ -71,9 +71,6 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                     if(!entry) return this.$router.push({name: 'no-entry'})
                 }
 
-                
-                
-
                 this.entry = entry
             },
             async saveEntry() {
@@ -83,9 +80,11 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                     await this.updateEntry(this.entry)
                 }else {
                     //Crear una nueva entrada
+                    const id = await this.createEntry(this.entry)
+                    this.$router.push({ name: 'entry', params: { id } })
                 }                
             },
-            ...mapActions('journal', ['updateEntry'])
+            ...mapActions('journal', ['updateEntry', 'createEntry'])
         },
 
         computed: {
