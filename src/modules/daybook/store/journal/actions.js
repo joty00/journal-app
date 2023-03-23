@@ -34,3 +34,10 @@ export const createEntry = async ({ commit }, entry) => {
     commit('addEntry', dataToSave)
     return data.name
 }
+
+export const deleteEntry = async ({ commit }, id) => {
+
+    await journalApi.delete(`/entries/${id}.json`)
+
+    commit('dltEntry', id)
+}

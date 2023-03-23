@@ -9,7 +9,9 @@
         </div>
 
         <div>
-            <button class="btn btn-danger mx-2">
+            <button v-if="entry.id"
+                    class="btn btn-danger mx-2"
+                    @click="onDeleteEntry">
                 Borrar
                 <i class="fa fa-trash-alt"></i>
             </button>
@@ -84,7 +86,11 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                     this.$router.push({ name: 'entry', params: { id } })
                 }                
             },
-            ...mapActions('journal', ['updateEntry', 'createEntry'])
+            async onDeleteEntry() {
+                await this.deleteEntry(this.entry.id)
+                this.$router.push({name: 'no-entry'})
+            },
+            ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry'])
         },
 
         computed: {
