@@ -1,7 +1,9 @@
 <template>
-  <button class="btn btn-primary" @click="goToDayBook">primary</button>
-  <button class="btn btn-secondary">secondary</button>
-  <button class="btn btn-success">success</button>
+  <div class="d-flex text-success">
+    <h1>Welcome to DayBook</h1>
+    <button class="btn btn-primary" @click="goToDayBook">Let's Start</button>
+  </div>
+  
 </template>
 
 <script>

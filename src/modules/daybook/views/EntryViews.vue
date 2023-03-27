@@ -9,6 +9,12 @@
         </div>
 
         <div>
+
+            <input type="file"
+                   @change="onSelectedImage"
+                   ref="imageSelector"
+                   v-show="false">
+
             <button v-if="entry.id"
                     class="btn btn-danger mx-2"
                     @click="onDeleteEntry">
@@ -16,7 +22,8 @@
                 <i class="fa fa-trash-alt"></i>
             </button>
 
-            <button class="btn btn-primary">
+            <button class="btn btn-primary"
+                    @click="onSelectImage">
                 Subir foto
                 <i class="fa fa-upload"></i>
             </button>
@@ -31,7 +38,8 @@
             </textarea>
         </div>
        <img class="img-thumbnail"
-            src="https://aptcrecetas.elcorteingles.es/supermercado/aptc/images/aptc/2228557/platano-la-fruta-saludable-que-debemos-consumir-a-cualquier-edad_0.jpg" alt="entry picture">
+            :src="localImage"
+            v-if="localImage">
     </template>
 
     <Fab icon="fa-save"
@@ -42,6 +50,7 @@
 import { defineAsyncComponent } from 'vue'
 import { mapGetters, mapActions } from 'vuex'; 
 import getDayMonthYear from '../helpers/getDayMonthYear'
+import Swal from 'sweetalert2'
 
     export default {
         props: {
@@ -56,7 +65,9 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
         },
         data() {
             return {
-                entry: null
+                entry: null,
+                localImage: null,
+                file: null
             }
         },
 
@@ -77,6 +88,13 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
             },
             async saveEntry() {
 
+                new Swal({
+                    title: 'Por favor espere...',
+                    allowOutsideClick: false
+                })
+
+                Swal.showLoading()
+
                 if(this.entry.id) {
                     //Actualizar entrada
                     await this.updateEntry(this.entry)
@@ -84,12 +102,51 @@ import getDayMonthYear from '../helpers/getDayMonthYear'
                     //Crear una nueva entrada
                     const id = await this.createEntry(this.entry)
                     this.$router.push({ name: 'entry', params: { id } })
-                }                
+                }       
+                
+                Swal.fire('Guardado', 'Entrada registrada con éxito', 'success')
             },
             async onDeleteEntry() {
-                await this.deleteEntry(this.entry.id)
-                this.$router.push({name: 'no-entry'})
+
+                const {isConfirmed} = await Swal.fire({
+                    title: '¿Está seguro?',
+                    text: 'Una vez borrado no se puede recuperar',
+                    showDenyButton: true,
+                    confirmButtonText: 'Si'
+                })
+
+                if(isConfirmed) {
+                    new Swal ({
+                        title: 'Espere por favor...',
+                        allowOutsideClick: false
+                    })
+
+                    Swal.showLoading()
+                    await this.deleteEntry(this.entry.id)
+                    this.$router.push({name: 'no-entry'})
+                    Swal.fire('Eliminado', '', 'success')
+                }
+
+                
+                
             },
+            onSelectedImage(event) {
+                const file = event.target.files[0]
+                if(!file) {
+                    this.localImage = null
+                    this.file = null
+                    return
+                }
+                this.file = file
+                const fr = new FileReader()
+                fr.onload = () => this.localImage = fr.result
+                fr.readAsDataURL(file)
+            },
+            onSelectImage() {
+                this.$refs.imageSelector.click()
+            
+            },
+
             ...mapActions('journal', ['updateEntry', 'createEntry', 'deleteEntry'])
         },
 
