@@ -13,7 +13,8 @@
             <input type="file"
                    @change="onSelectedImage"
                    ref="imageSelector"
-                   v-show="false">
+                   v-show="false"
+                   accept="image/png, image/jpeg">
 
             <button v-if="entry.id"
                     class="btn btn-danger mx-2"
@@ -37,6 +38,10 @@
                      v-model="entry.text">
             </textarea>
         </div>
+        <img class="img-thumbnail"
+            :src="entry.picture"
+            v-if="entry.picture && !localImage">
+
        <img class="img-thumbnail"
             :src="localImage"
             v-if="localImage">
@@ -48,9 +53,10 @@
 
 <script>
 import { defineAsyncComponent } from 'vue'
-import { mapGetters, mapActions } from 'vuex'; 
+import { mapGetters, mapActions } from 'vuex'
 import getDayMonthYear from '../helpers/getDayMonthYear'
 import Swal from 'sweetalert2'
+import uploadImage from '../helpers/uploadImage'
 
     export default {
         props: {
@@ -95,6 +101,9 @@ import Swal from 'sweetalert2'
 
                 Swal.showLoading()
 
+                const picture = await uploadImage(this.file)
+                this.entry.picture = picture
+
                 if(this.entry.id) {
                     //Actualizar entrada
                     await this.updateEntry(this.entry)
@@ -103,7 +112,7 @@ import Swal from 'sweetalert2'
                     const id = await this.createEntry(this.entry)
                     this.$router.push({ name: 'entry', params: { id } })
                 }       
-                
+                this.file = null
                 Swal.fire('Guardado', 'Entrada registrada con éxito', 'success')
             },
             async onDeleteEntry() {
