@@ -1,0 +1,7 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Pruebas en el Home View > debe renderizar el componente correctamente  1`] = `
+"<div class=\\"d-flex text-success\\">
+  <h1>Welcome to DayBook</h1><button class=\\"btn btn-primary\\">Let's Start</button>
+</div>"
+`;
